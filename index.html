@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+		<script defer src="scripts/face-api.min.js"></script>
+
+		<script src="settings/constants.js"></script>
+		<script src="settings/employees.js"></script>
+
+		<script defer src="scripts/main.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="styles/main.css" />
+
+		<title>APS - Face Recognition</title>
+	</head>
+	<body>
+		<div id="container">
+			<h3 id="loading"></h3>
+			<form id="loginForm" onsubmit="submitForm(event)">
+				<input type="text" name="username" />
+				<input type="text" name="password" />
+				<button type="submit">Submit</button>
+			</form>
+			<input type="file" id="imageUpload" />
+			<div id="canvasWrapper" style="position: relative"></div>
+		</div>
+	</body>
+</html>
