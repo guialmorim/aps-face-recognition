@@ -10,22 +10,71 @@
 		<script src="settings/constants.js"></script>
 		<script src="settings/employees.js"></script>
 
+		<script defer src="scripts/alerts.js"></script>
 		<script defer src="scripts/main.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="styles/main.css" />
 
+		<link href="lib/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
+		<script src="lib/bootstrap.min.js"></script>
+		<script src="lib/jquery.min.js"></script>
+		<script src="lib/sweetalert2@11.js"></script>
+
 		<title>APS - Face Recognition</title>
 	</head>
 	<body>
-		<div id="container">
-			<h3 id="loading"></h3>
-			<form id="loginForm" onsubmit="submitForm(event)">
-				<input type="text" name="username" />
-				<input type="text" name="password" />
-				<button type="submit">Submit</button>
-			</form>
-			<input type="file" id="imageUpload" />
-			<div id="canvasWrapper" style="position: relative"></div>
+		<div class="wrapper fadeInDown">
+			<div id="formContent">
+				<!-- Tabs Titles -->
+
+				<h1 style="margin-bottom: 20px">Instituto Butatã</h1>
+
+				<!-- Icon -->
+				<div class="fadeIn first">
+					<img
+						src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/OOjs_UI_icon_userAvatar.svg/1200px-OOjs_UI_icon_userAvatar.svg.png"
+						id="icon"
+						alt="User Icon"
+					/>
+
+					<h5>Login</h5>
+				</div>
+
+				<h3 id="loading">
+					<div class="spinner-border text-primary" role="status">
+						<span class="visually-hidden">Carregando...</span>
+					</div>
+				</h3>
+
+				<!-- Login Form -->
+				<form id="loginForm" onsubmit="submitForm(event)">
+					<input
+						type="text"
+						id="login"
+						class="fadeIn second"
+						name="username"
+						placeholder="Usúario"
+					/>
+					<input
+						type="password"
+						id="password"
+						class="fadeIn third"
+						name="login"
+						placeholder="Senha"
+					/>
+
+					<input type="file" id="imageUpload" placeholder="Image Upload" />
+
+					<input type="submit" class="fadeIn fourth" value="Enviar" />
+				</form>
+
+				<!-- Remind Passowrd -->
+				<div id="formFooter">
+					<!-- <a class="underlineHover" href="#">Esqueceu sua senha?</a> -->
+
+					<div id="canvasWrapper"></div>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>

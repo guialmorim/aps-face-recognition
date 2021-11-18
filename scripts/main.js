@@ -16,10 +16,20 @@ async function handleImageSubmitted() {
 
 	if (!uploadedImage)
 		throw new Error(
-			'Por favor, faça o upload de uma imagem para realização da biometria'
+			'Por favor, faça o upload de uma imagem para realização da biometria!'
 		);
 
 	const image = await faceapi.bufferToImage(uploadedImage);
+
+	const displaySize = calculateAspectRatioFit(
+		image.width,
+		image.height,
+		300,
+		300
+	);
+
+	image.width = displaySize.width;
+	image.height = displaySize.height;
 
 	// Limpa a imagem e o canvas
 	canvasWrapper.innerHTML = '';
@@ -29,8 +39,6 @@ async function handleImageSubmitted() {
 	const canvas = faceapi.createCanvasFromMedia(image);
 
 	canvasWrapper.append(canvas);
-
-	const displaySize = { width: image.width, height: image.height };
 
 	faceapi.matchDimensions(canvas, displaySize);
 
@@ -71,12 +79,18 @@ function handleFormatResultObject(detectedFaces) {
 }
 
 async function main() {
-	loadingElement.innerText = 'Loading Models.';
+	toggleDisabledInputs();
+
+	const feedbackSpan = document.createElement('span');
+	feedbackSpan.innerText = 'Carregando Modelos.';
+	loadingElement.appendChild(feedbackSpan);
 
 	const labeledFaceDescriptors = await loadLabeledImages();
 	faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6);
 
-	loadingElement.innerText = 'Loaded.';
+	loadingElement.innerText = 'Modelos Carregados.';
+
+	toggleDisabledInputs();
 }
 
 async function loadLabeledImages() {
@@ -119,22 +133,21 @@ async function submitForm(event) {
 
 	try {
 		const result = await handleImageSubmitted();
-		console.log(result);
+		//console.log(result);
 
 		const { status, message } = handleAuthUser(loginObject, result);
 
-		loadingElement.innerText = message;
-
-		if (status === 401) alert(message);
+		if (status === 401) showAlert(message, 'warning');
+		if (status === 200) showAlert(message, 'success', 'Sucesso!');
 	} catch (error) {
-		alert(error.message);
+		showAlert(error.message, 'error');
 	}
 }
 
 function handleAuthUser(loginObject, result) {
 	if (result.length > 1)
 		throw new Error(
-			'Por favor, faça o upload de uma imagem com apenas um rosto'
+			'Por favor, faça o upload de uma imagem com apenas um rosto!'
 		);
 
 	const employee = employees.find((e) => e.name === result[0].label);
@@ -149,7 +162,10 @@ function handleAuthUser(loginObject, result) {
 		employee.username === loginObject.username &&
 		employee.password === loginObject.password
 	) {
-		return { status: 200, message: 'Acesso Permitido.' };
+		return {
+			status: 200,
+			message: `Acesso Permitido. Bem-vindo, ${employee.name}!`,
+		};
 	}
 
 	return { status: 401, message: 'Credenciais Incorretas.' };
@@ -164,4 +180,27 @@ async function readJson(fileName) {
 		});
 
 	return json;
+}
+
+function toggleDisabledInputs() {
+	const username = document.getElementById('login');
+	const password = document.getElementById('password');
+
+	if ($(username).attr('disabled')) {
+		$(username).attr('disabled', false);
+	} else {
+		$(username).attr('disabled', true);
+	}
+
+	if ($(password).attr('disabled')) {
+		$(password).attr('disabled', false);
+	} else {
+		$(password).attr('disabled', true);
+	}
+}
+
+function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
+	var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+
+	return { width: srcWidth * ratio, height: srcHeight * ratio };
 }
